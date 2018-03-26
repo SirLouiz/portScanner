@@ -22,9 +22,10 @@ def tempo(): #transforma o minuto e segundo atual em um numero para contagem de 
 	return seg
 
 def hostisup(ip):
-        HOST_UP  = True if os.system("ping -c 1 " + ip + " > /dev/null") is 0 else False
-        if HOST_UP == True:
-                print "Host: ",ip," is up!"
+	return True if os.system("ping -c 1 " + ip + " > /dev/null") is 0 else False
+	#HOST_UP  = True if os.system("ping -c 1 " + ip + " > /dev/null") is 0 else False
+	#if HOST_UP == True:
+	#	print "Host: ",ip," is up!"
 
 def porttry(ip, port): #abre o socket, tenta conectar, pega o banner, fecha e retorna o banner
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #socket.AF_INET, socket.SOCK_STREAM
@@ -75,59 +76,59 @@ op =[]
 print ("Scanning...")
 if opt[0] == 1: #opt1 eh o caso em que ha range de portas e um ip
 	segA = tempo() #mede o tempo antes
-	hostisup(opt[3])
-	for port in range(opt[1], opt[2]+1):
-		deu,banner = porttry(opt[3], port)
-		if deu == None:
-			#print ("Port %d closed" % port)
-			continue
-		else:
-			#print "Host: ",opt[3]," is up!"
-			print("Port %d opened" % port)
-			op.append(port)
-			print banner
+	if hostisup(opt[3]):
+		for port in range(opt[1], opt[2]+1):
+			deu,banner = porttry(opt[3], port)
+			if deu == None:
+				#print ("Port %d closed" % port)
+				continue
+			else:
+				#print "Host: ",opt[3]," is up!"
+				print("Port %d opened" % port)
+				op.append(port)
+				print banner
 	segD = tempo() #mede o tempo depois
 elif opt[0] == 2: #opt1 eh o caso em que ha range de portas e um range de ips
         segA = tempo() #mede o tempo antes
 	for i in range(opt[4], opt[5]+1):
 		ip = opt[3] + '.' + str(i)
-		hostisup(ip)
-		for port in range(opt[1], opt[2]+1):
-			#ip = opt[3] + '.' + str(i)
-			deu,banner = porttry(ip, port)
-                	if deu == None:
-                        	#print ("Port %d closed" % port)
-                        	continue
-                	else:
-				#print "Host: ",ip," is up!"
-                        	print("Port %d opened" % port)
-                        	op.append(port)
-                        	print banner
+		if hostisup(ip):
+			for port in range(opt[1], opt[2]+1):
+				#ip = opt[3] + '.' + str(i)
+				deu,banner = porttry(ip, port)
+		        	if deu == None:
+		                	#print ("Port %d closed" % port)
+		                	continue
+		        	else:
+					#print "Host: ",ip," is up!"
+		                	print("Port %d opened" % port)
+		                	op.append(port)
+		                	print banner
         segD = tempo() #mede o tempo depois
 elif opt[0] == 3: #opt3 eh o caso de so haver uma porta e um ip
 	segA = tempo() #mede o tempo antes
 	#print "Host: ",opt[2]
-	hostisup(opt[2])
-	deu,banner = porttry(opt[2], opt[1])
-	if deu == True:
-		#print "Host: ",opt[2]," is up!"
-		print("Port %d opened" % opt[1])
-		op.append(opt[1])
-		print banner
+	if hostisup(opt[2]):
+		deu,banner = porttry(opt[2], opt[1])
+		if deu == True:
+			#print "Host: ",opt[2]," is up!"
+			print("Port %d opened" % opt[1])
+			op.append(opt[1])
+			print banner
 	segD = tempo() #mede o tempo depois
 elif opt[0] == 4: #opt4 eh o caso de so haver uma porta e um range de ips
 	segA = tempo() #mede o tempo antes
 	for i in range(opt[3],opt[4]+1):
 		ip = opt[2] + '.' + str(i)
-		hostisup(ip)
-		deu,banner = porttry(ip, opt[1])
-		if deu == True:
-			#print "Host: ",ip," is up!"
-			print("Port %d opened" % opt[1])
-			op.append(opt[1])
-			print banner
-		else:
-			continue
+		if hostisup(ip):
+			deu,banner = porttry(ip, opt[1])
+			if deu == True:
+				#print "Host: ",ip," is up!"
+				print("Port %d opened" % opt[1])
+				op.append(opt[1])
+				print banner
+			else:
+				continue
 	segD = tempo() #mede o tempo depois
 
 demorou = segD - segA #calcula diferenca
