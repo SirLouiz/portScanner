@@ -39,11 +39,16 @@ def porttry(ip, port): #abre o socket, tenta conectar, pega o banner, fecha e re
 		return True, str(banner)
 	except:
 		return None, str(0)
+
+def erro():
+	print("Erro!")
+	print("Uso correto: $ python meuPS.py <IP|Range de IPS> <PORTA|Range de Portas>")
+	print("Exemplo: $ python meuPS.py 192.168.1.0-255 1-80")
+	exit()
+
 def parser(args): #parser de entrada
 	if len(args) < 3:
-		print("Erro! ")
-		print("Uso correto: $ python meuPS.py <IP> <PORTA>")
-		exit()
+		erro()
 	ip = args[1]
 	if find(ip, '-') != -1:
 		fin = 1
@@ -52,8 +57,16 @@ def parser(args): #parser de entrada
 		ip = ipS[0]+'.'+ipS[1]+'.'+ipS[2]
 		ip1 = int(ip1)
 		ip2 = int(ip2)
+		if ip2 > 255:
+			erro()
+		if ip1 > ip2:
+			erro()
 	else:
+		ipS = ip.split(".")
 		fin = 0
+		ipS[3] = int(ipS[3])
+		if ipS[3] > 255:
+			erro()
 	ports = args[2]
 	if find(ports, '-') != -1:
 		p1,p2 = ports.split("-")
